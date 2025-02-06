@@ -1,31 +1,43 @@
 import discord
-from discord import app_commands 
+from discord import app_commands
+import os
+from color import Color
 import config
-import random
+import loader  
+from function.autoreply import handle_reply 
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)
+token = config.DISCORD_TOKEN
 
-# 起動イベント, コマンドの同期
 @client.event
 async def on_ready():
-    print(f'{client.user} is online!') 
-    await client.change_presence(activity=discord.Game('d.py test'))  
-    await tree.sync()
+    try:
+        token_preview = token[:8] 
+        Color.print_green(f'[LOGIN] {client.user} is online! ({token_preview}...)')  
 
-# メッセージイベント
+        await client.change_presence(activity=discord.Game('d.py test'))  
+        Color.print_green(f'[SUCCESS] Activity setup complete!')
+
+        tree = app_commands.CommandTree(client)
+        await loader.load_commands(tree)
+        await tree.sync()
+        Color.print_green(f'[SUCCESS] Command registration complete!')
+    except Exception as e:
+        Color.print_red(f'[ERROR] An error occurred during setup: {e}')
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content == 'hello': 
-        await message.reply(content='Hello', mention_author=False)  
+    await handle_reply(message)  
 
-# スラッシュコマンド
-@tree.command(name='ping', description='Ping!') 
-async def test(interaction: discord.Interaction): 
-  await interaction.response.send_message('🏓Pong!')
+@client.event
+async def on_error(event, *args, **kwargs):
+    Color.print_red(f'[ERROR] An error occurred in the event handler: {event}, Args: {args}, Kwargs: {kwargs}')
 
-client.run(config.DISCORD_TOKEN)
+try:
+    client.run(token)
+except Exception as e:
+    Color.print_red(f'[ERROR] Failed to run the bot: {e}')

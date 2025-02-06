@@ -1,3 +1,14 @@
 # Discord.py-BOT
+discord.pyのBOT
+# Commands
+- ping
+- about
+- ephemeral
+<br>
+![Image](https://github.com/user-attachments/assets/ff5a54b1-154f-4437-9735-fe9ef7ee87ea)
 
-![Image](https://github.com/user-attachments/assets/ff2620d6-9169-4f89-b0fb-e09c9ea7de6e)
+# Autoreply
+- hello
+- goodbye
+<br>
+![Image](https://github.com/user-attachments/assets/e6909086-5b5f-439a-b97e-ce933a519992)
